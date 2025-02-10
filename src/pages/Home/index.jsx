@@ -1,9 +1,27 @@
-import  Button  from "../../components/Button"
+import { useNavigate } from "react-router-dom"
+import { useRef } from "react"
+import api from '../../services/api'
+
+import Button from "../../components/Button"
 import MainTitle from "../../components/Title"
 import TopBackground from "../../components/TopBackground"
 import { Container, ContainerInputs, Form, Input, InputLabel } from "./styles"
 
 function Home() {
+  const inputName = useRef()
+  const inputAge = useRef()
+  const inputEmail = useRef()
+
+  const navigate = useNavigate()
+
+  async function registerNewUser() {
+    const { data } = await api.post('/usuarios', {
+      name: inputName.current.value,
+      age: parseInt(inputAge.current.value),
+      email: inputEmail.current.value
+    })
+    navigate('/lista-de-usuarios')
+  }
 
   return (
     <Container>
@@ -13,20 +31,20 @@ function Home() {
         <ContainerInputs>
           <div>
             <InputLabel>Nome <span> *</span></ InputLabel>
-            <Input />
+            <Input type="text" placeholder="Nome do Usuário" ref={inputName} />
 
             <InputLabel>Idade <span> *</span></InputLabel>
-            <Input />
+            <Input type="number" placeholder="Idade do Usuário" ref={inputAge} />
           </div>
         </ContainerInputs>
-        <div style={{width: "100%"}}>
+        <div style={{ width: "100%" }}>
           <InputLabel>Email <span> *</span></InputLabel>
-          <Input />
+          <Input type="email" placeholder="E-mail do Usuário" ref={inputEmail} />
         </div>
 
-        <Button>Cadastrar Usuário</Button>
+        <Button type="button" onClick={registerNewUser} theme="primary">Cadastrar Usuário</Button>
       </Form>
-      <Button>Ver Lista de Usuários</Button>
+      <Button type="button" onClick={() => navigate('/lista-de-usuarios')}>Ver Lista de Usuários</Button>
     </Container>
   )
 }
